@@ -1,5 +1,6 @@
 package br.com.andrew.kafka_impl.consumer;
 
+import br.com.andrew.kafka_impl.dto.TransactionDTO;
 import br.com.andrew.kafka_impl.service.FraudService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ public class KafkaConsumer {
     }
 
     @Bean
-    public Consumer<Message<String>> testConsumer(){
+    public Consumer<Message<TransactionDTO>> testConsumer(){
         return message -> {
             System.out.println("Consumindo");
             System.out.println(fraudService.isFraud(message.getPayload()) ? "Fraude!" : "Nao fraude.");

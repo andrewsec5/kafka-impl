@@ -1,5 +1,6 @@
 package br.com.andrew.kafka_impl.service;
 
+import br.com.andrew.kafka_impl.dto.TransactionDTO;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ public class FraudService {
         this.loopCache = cacheManager.getCache(LOOP_CACHE);
     }
 
-    public boolean isFraud(String key){
+    public boolean isFraud(TransactionDTO request){
+        String key = request.id();
         boolean response = true;
 
         int tentativa = loopCache.get(key, Integer.class) == null ? 0 : loopCache.get(key, Integer.class);
