@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: kafka-impl
+  data:
+    redis:
+      host: localhost
+      port: 6378
+  cloud:
+    function:
+      definition: testConsumer
+    stream:
+      bindings:
+        test-out-0:
+          destination: my-topic
+        testConsumer-in-0:
+          destination: my-topic
+          group: spring-group
+          consumer:
+            max-attempots:
+            back-off-initial-interval: 5000
+            back-off-max-interval: 12000
+            back-off-multiplier: 2.0
+
+      kafka:
+        bindings:
+          test-out-0:
+            consumer:
+              enable-dlq: true
+
+server:
+  port: 8085
