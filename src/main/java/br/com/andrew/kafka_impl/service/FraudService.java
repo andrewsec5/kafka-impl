@@ -3,11 +3,15 @@ package br.com.andrew.kafka_impl.service;
 import br.com.andrew.kafka_impl.dto.FraudeTransactionDTO;
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
 import br.com.andrew.kafka_impl.producer.KafkaProducer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
 
 import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
 
@@ -54,10 +58,29 @@ public class FraudService {
 
     }
 
-//    public boolean porComercio(TransactionDTO request){
-//        String comercio = request.comerciante();
-//
-//        fraudCache.get(request.comerciante());
-//    }
+    public boolean fraudePorComercio(TransactionDTO request){
+        String key = request.id();
+        String comercio = request.comerciante();
+
+        Cache.ValueWrapper obj = fraudCache.get(key);
+        Object dadoNoRedis = obj.get();
+
+        if(existsByKey(key) && (dadoNoRedis instanceof TransactionDTO transacaoNoRedis)){
+
+            return comercio.equals(transacaoNoRedis.comerciante());
+
+        }
+
+        return false;
+
+    }
+
+    public boolean existsByKey(String key){
+
+        Cache.ValueWrapper obj = fraudCache.get(key);
+
+        return !Objects.isNull(obj);
+
+    }
 
 }
