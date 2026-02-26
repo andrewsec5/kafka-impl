@@ -4,7 +4,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6378
+      port: 6379
   cloud:
     function:
       definition: testConsumer
@@ -12,6 +12,8 @@ spring:
       bindings:
         test-out-0:
           destination: my-topic
+        detected-out-0:
+          destination: fraude-topic
         testConsumer-in-0:
           destination: my-topic
           group: spring-group
@@ -28,4 +30,4 @@ spring:
               enable-dlq: true
 
 server:
-  port: 8085
+  port: 10016

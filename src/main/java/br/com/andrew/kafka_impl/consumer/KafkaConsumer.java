@@ -13,6 +13,7 @@ public class KafkaConsumer {
 
     private final FraudService fraudService;
 
+
     public KafkaConsumer(FraudService fraudService) {
         this.fraudService = fraudService;
     }
@@ -20,9 +21,14 @@ public class KafkaConsumer {
     @Bean
     public Consumer<Message<TransactionDTO>> testConsumer(){
         return message -> {
-            System.out.println("Consumindo");
-            System.out.println(fraudService.isFraud(message.getPayload()) ? "Fraude!" : "Nao fraude.");
-            System.out.println(message.getPayload());
+
+           boolean isFraude = fraudService.isFraud(message.getPayload());
+
+           if(isFraude){
+               fraudService.produceMsg(message.getPayload());
+               System.out.println("mandou pro topico");
+           }
+
         };
     }
 

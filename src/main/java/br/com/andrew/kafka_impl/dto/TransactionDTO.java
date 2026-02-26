@@ -16,4 +16,14 @@ public record TransactionDTO(
         String tipoTransacao,
         OffsetDateTime dataHora
 ) {
+    public static FraudeTransactionDTO toFraude(TransactionDTO request){
+
+        return  FraudeTransactionDTO.builder().id(request.id())
+                .valor(request.valor())
+                .dataHora(request.dataHora())
+                .cartaoId(request.cartaoId())
+                .tipoTransacao(request.tipoTransacao())
+                .message("Fraude detectado, compra cancelada!")
+                .isFraude(true).build();
+    }
 }

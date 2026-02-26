@@ -1,16 +1,21 @@
 package br.com.andrew.kafka_impl.service;
 
+import br.com.andrew.kafka_impl.dto.FraudeTransactionDTO;
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
+import br.com.andrew.kafka_impl.producer.KafkaProducer;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
+
 @Service
 public class FraudService {
 
     private final RedisCacheManager cacheManager;
+    private final KafkaProducer kafkaProducer;
 
     private static final String FRAUD_CACHE = "fraudCache";
     private static final String LOOP_CACHE = "loopCache";
@@ -18,10 +23,11 @@ public class FraudService {
     private final Cache fraudCache;
     private final Cache loopCache;
 
-    public FraudService(RedisCacheManager cacheManager) {
+    public FraudService(RedisCacheManager cacheManager, KafkaProducer kafkaProducer) {
         this.cacheManager = cacheManager;
         this.fraudCache = cacheManager.getCache(FRAUD_CACHE);
         this.loopCache = cacheManager.getCache(LOOP_CACHE);
+        this.kafkaProducer = kafkaProducer;
     }
 
     public boolean isFraud(TransactionDTO request){
@@ -42,8 +48,16 @@ public class FraudService {
         return response;
     }
 
-    public void produceMsg(String newKey, LocalDateTime now){
+    public void produceMsg(TransactionDTO request){
+
+            kafkaProducer.fraudDetected(toFraude(request));
 
     }
+
+//    public boolean porComercio(TransactionDTO request){
+//        String comercio = request.comerciante();
+//
+//        fraudCache.get(request.comerciante());
+//    }
 
 }
