@@ -13,7 +13,7 @@ public class FraudService {
 
     private static final String FRAUD_CACHE = "fraudCache";
     private static final String LOOP_CACHE = "loopCache";
-    private static final int QTD_TENTATIVAS = 3;
+    private static final int QTD_TENTATIVAS = 10;
     private final Cache fraudCache;
     private final Cache loopCache;
 
@@ -34,7 +34,7 @@ public class FraudService {
 
         tentativa = tentativa + 1;
 
-        loopCache.put(key, Integer.valueOf(tentativa));
+        loopCache.put(key, tentativa);
         fraudCache.put(key, null);
 
         return response;
