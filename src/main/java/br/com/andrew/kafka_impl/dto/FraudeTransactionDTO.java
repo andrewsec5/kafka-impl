@@ -12,8 +12,7 @@ public record FraudeTransactionDTO(
         BigDecimal valor,
         String tipoTransacao,
         OffsetDateTime dataHora,
-        String message,
-        Boolean isFraude
+        String message
 ) {
 
 }
