@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public class KafkaConsumer {
 
     private final FraudService fraudService;
-
+    private int dlqCounter = 0;
 
     public KafkaConsumer(FraudService fraudService) {
         this.fraudService = fraudService;
@@ -22,11 +22,16 @@ public class KafkaConsumer {
     public Consumer<Message<TransactionDTO>> testConsumer(){
         return message -> {
 
+            if(dlqCounter == 10){
+                dlqCounter = 0;
+                throw new RuntimeException("Mock de erro no processamento, mandando para DLQ");
+            }
+            dlqCounter++;
            boolean isFraude = fraudService.isFraud(message.getPayload());
 
            if(isFraude){
                fraudService.produceMsg(message.getPayload());
-               System.out.println("mandou pro topico");
+               System.out.println("Mandou pro topico");
            }
 
         };

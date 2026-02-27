@@ -25,7 +25,7 @@ spring:
 
       kafka:
         bindings:
-          test-out-0:
+          testConsumer-in-0:
             consumer:
               enable-dlq: true
 
