@@ -1,15 +1,25 @@
 package br.com.andrew.kafka_impl.service;
 
+import br.com.andrew.kafka_impl.dto.FraudeTransactionDTO;
+import br.com.andrew.kafka_impl.dto.TransactionDTO;
+import br.com.andrew.kafka_impl.producer.KafkaProducer;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
+
+import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
 
 @Service
 public class FraudService {
 
     private final RedisCacheManager cacheManager;
+    private final KafkaProducer kafkaProducer;
 
     private static final String FRAUD_CACHE = "fraudCache";
     private static final String LOOP_CACHE = "loopCache";
@@ -17,13 +27,15 @@ public class FraudService {
     private final Cache fraudCache;
     private final Cache loopCache;
 
-    public FraudService(RedisCacheManager cacheManager) {
+    public FraudService(RedisCacheManager cacheManager, KafkaProducer kafkaProducer) {
         this.cacheManager = cacheManager;
         this.fraudCache = cacheManager.getCache(FRAUD_CACHE);
         this.loopCache = cacheManager.getCache(LOOP_CACHE);
+        this.kafkaProducer = kafkaProducer;
     }
 
-    public boolean isFraud(String key){
+    public boolean isFraud(TransactionDTO request){
+        String key = request.id();
         boolean response = true;
 
         int tentativa = loopCache.get(key, Integer.class) == null ? 0 : loopCache.get(key, Integer.class);
@@ -40,7 +52,34 @@ public class FraudService {
         return response;
     }
 
-    public void produceMsg(String newKey, LocalDateTime now){
+    public void produceMsg(TransactionDTO request){
+
+            kafkaProducer.fraudDetected(toFraude(request));
+
+    }
+
+    public boolean fraudePorComercio(TransactionDTO request){
+        String key = request.id();
+        String comercio = request.comerciante();
+
+        Cache.ValueWrapper obj = fraudCache.get(key);
+        Object dadoNoRedis = obj.get();
+
+        if(existsByKey(key) && (dadoNoRedis instanceof TransactionDTO transacaoNoRedis)){
+
+            return comercio.equals(transacaoNoRedis.comerciante());
+
+        }
+
+        return false;
+
+    }
+
+    public boolean existsByKey(String key){
+
+        Cache.ValueWrapper obj = fraudCache.get(key);
+
+        return !Objects.isNull(obj);
 
     }
 

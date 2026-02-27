@@ -1,7 +1,9 @@
 package br.com.andrew.kafka_impl.producer;
 
+import br.com.andrew.kafka_impl.dto.TransactionDTO;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,9 +17,9 @@ public class ProducerController {
         this.kafkaProducer = kafkaProducer;
     }
 
-    @PostMapping("/{message}")
-    public void postTest(@PathVariable String message){
-        kafkaProducer.publish(message);
+    @PostMapping
+    public void postTest(@RequestBody TransactionDTO request){
+        kafkaProducer.publish(request);
     }
 
 }
