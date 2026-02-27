@@ -6,8 +6,6 @@ import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
 
 @Service
@@ -50,31 +48,6 @@ public class FraudService {
     public void produceMsg(TransactionDTO request){
 
             kafkaProducer.fraudDetected(toFraude(request));
-
-    }
-
-    public boolean fraudePorComercio(TransactionDTO request){
-        String key = request.id();
-        String comercio = request.comerciante();
-
-        Cache.ValueWrapper obj = fraudCache.get(key);
-        Object dadoNoRedis = obj.get();
-
-        if(existsByKey(key) && (dadoNoRedis instanceof TransactionDTO transacaoNoRedis)){
-
-            return comercio.equals(transacaoNoRedis.comerciante());
-
-        }
-
-        return false;
-
-    }
-
-    public boolean existsByKey(String key){
-
-        Cache.ValueWrapper obj = fraudCache.get(key);
-
-        return !Objects.isNull(obj);
 
     }
 
