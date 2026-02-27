@@ -6,6 +6,8 @@ import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+
 import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
 
 @Service
@@ -28,6 +30,13 @@ public class FraudService {
     }
 
     public boolean isFraud(TransactionDTO request){
+
+        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime msgDate = request.dataHora();
+        if(msgDate.isBefore(now.minusSeconds(30))){
+            return false;
+        }
+
         String key = request.cartaoId();
         boolean response = true;
 
