@@ -1,4 +1,4 @@
-package br.com.andrew.kafka_impl.consumer;
+package br.com.andrew.kafka_impl.messaging.consumer;
 
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
 import br.com.andrew.kafka_impl.service.FraudService;
