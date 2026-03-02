@@ -67,24 +67,14 @@ public class FraudService {
         String comercio = request.comerciante();
 
         Cache.ValueWrapper obj = fraudCache.get(key);
-        Object dadoNoRedis = obj.get();
 
-        if(existsByKey(key) && (dadoNoRedis instanceof TransactionDTO transacaoNoRedis)){
 
+        if(obj != null && (obj.get() instanceof TransactionDTO transacaoNoRedis)){
             return comercio.equals(transacaoNoRedis.comerciante());
-
         }
 
         return false;
 
     }
-
-    public boolean existsByKey(String key){
-
-        Cache.ValueWrapper obj = fraudCache.get(key);
-
-        return !Objects.isNull(obj);
-
-    }
-
+    
 }
