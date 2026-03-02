@@ -24,7 +24,7 @@ public class RedisConfig {
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
         cacheConfigurations.put("fraudCache",
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(30)));
+                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(4)));
 
         cacheConfigurations.put("loopCache",
                 RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(30)));
