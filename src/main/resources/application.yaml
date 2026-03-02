@@ -18,7 +18,7 @@ spring:
           destination: my-topic
           group: spring-group
           consumer:
-            max-attempots:
+            max-attempts: 1
             back-off-initial-interval: 5000
             back-off-max-interval: 12000
             back-off-multiplier: 2.0
