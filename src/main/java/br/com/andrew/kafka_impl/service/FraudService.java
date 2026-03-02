@@ -1,12 +1,10 @@
 package br.com.andrew.kafka_impl.service;
 
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
-import br.com.andrew.kafka_impl.producer.KafkaProducer;
+import br.com.andrew.kafka_impl.messaging.producer.KafkaProducer;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
-
-import java.time.OffsetDateTime;
 
 import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
 
@@ -30,14 +28,7 @@ public class FraudService {
     }
 
     public boolean isFraud(TransactionDTO request){
-
-        OffsetDateTime now = OffsetDateTime.now();
-        OffsetDateTime msgDate = request.dataHora();
-        if(msgDate.isBefore(now.minusSeconds(30))){
-            return false;
-        }
-
-        String key = request.cartaoId();
+        String key = request.id();
         boolean response = true;
 
         int tentativa = loopCache.get(key, Integer.class) == null ? 0 : loopCache.get(key, Integer.class);
@@ -46,10 +37,14 @@ public class FraudService {
             response = false;
         }
 
+        if(tentativa < QTD_TENTATIVAS){
+            response = fraudePorComercio(request);
+        }
+
         tentativa = tentativa + 1;
 
         loopCache.put(key, tentativa);
-        fraudCache.put(key, null);
+        fraudCache.put(key, request.comerciante());
 
         return response;
     }
@@ -57,6 +52,21 @@ public class FraudService {
     public void produceMsg(TransactionDTO request){
 
             kafkaProducer.fraudDetected(toFraude(request));
+
+    }
+
+    public boolean fraudePorComercio(TransactionDTO request){
+        String key = request.id();
+        String comercio = request.comerciante();
+
+        String obj = fraudCache.get(key, String.class);
+
+
+        if(obj != null ){
+            return comercio.equals(obj);
+        }
+
+        return false;
 
     }
 

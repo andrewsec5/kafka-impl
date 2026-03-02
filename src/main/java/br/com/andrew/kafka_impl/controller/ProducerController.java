@@ -1,6 +1,7 @@
-package br.com.andrew.kafka_impl.producer;
+package br.com.andrew.kafka_impl.controller;
 
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
+import br.com.andrew.kafka_impl.messaging.producer.KafkaProducer;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
