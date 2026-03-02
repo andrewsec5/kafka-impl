@@ -44,6 +44,10 @@ public class FraudService {
             response = false;
         }
 
+        if(tentativa <QTD_TENTATIVAS){
+            return fraudePorComercio(request);
+        }
+
         tentativa = tentativa + 1;
 
         loopCache.put(key, tentativa);

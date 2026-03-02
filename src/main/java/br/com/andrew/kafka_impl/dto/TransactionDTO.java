@@ -24,6 +24,6 @@ public record TransactionDTO(
                 .cartaoId(request.cartaoId())
                 .tipoTransacao(request.tipoTransacao())
                 .message("Fraude detectado, compra cancelada!")
-                .isFraude(true).build();
+                .build();
     }
 }
