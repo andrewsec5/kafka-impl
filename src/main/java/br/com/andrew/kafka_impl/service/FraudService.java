@@ -1,12 +1,9 @@
 package br.com.andrew.kafka_impl.service;
 
-import br.com.andrew.kafka_impl.dto.FraudeTransactionDTO;
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
 import br.com.andrew.kafka_impl.producer.KafkaProducer;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Service;
 
 import static br.com.andrew.kafka_impl.dto.TransactionDTO.toFraude;
