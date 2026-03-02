@@ -1,4 +1,4 @@
-package br.com.andrew.kafka_impl.producer;
+package br.com.andrew.kafka_impl.messaging.producer;
 
 import br.com.andrew.kafka_impl.dto.FraudeTransactionDTO;
 import br.com.andrew.kafka_impl.dto.TransactionDTO;

@@ -1,7 +1,7 @@
 package br.com.andrew.kafka_impl.service;
 
 import br.com.andrew.kafka_impl.dto.TransactionDTO;
-import br.com.andrew.kafka_impl.producer.KafkaProducer;
+import br.com.andrew.kafka_impl.messaging.producer.KafkaProducer;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
